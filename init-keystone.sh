@@ -58,6 +58,12 @@ ADMIN_TENANT=$(get_id keystone tenant-create --name=admin)
 keystone user-role-add --user $ADMIN_USER --role $ADMIN_ROLE --tenant_id $ADMIN_TENANT
 echo "done"
 
+
+# Member role isused within the Horizon as the default security level
+echo -n "Adding Member role ..."
+MEMBER_ROLE=$(get_id keystone role-create --name=Member)
+echo "done"
+
 # Keystone initialization
 echo -n "Adding Keystone service ... "
 

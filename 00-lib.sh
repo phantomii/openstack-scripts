@@ -21,3 +21,14 @@ function read_config()
 }
 
 read_config
+
+function merge_config()
+{
+	$BASE_DIR/merge-config.py $@
+}
+
+
+function backup_file()
+{
+	cp $1 $1.orig
+}

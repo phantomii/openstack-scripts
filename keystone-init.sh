@@ -1,41 +1,19 @@
 #!/bin/bash
-#
-# Variables set before calling this script:
-# SERVICE_TOKEN - aka admin_token in keystone.conf
-# SERVICE_ENDPOINT - local Keystone admin endpoint
-# ADMIN_PASSWORD (optional) - the password that will be assigned to the "admin" user. By default is "nova"
-# SERVICE_PASSWORD (optional) - the password that will be assigned to the "nova", "glance", "swift" users.
-# 	The ADMIN_PASSWORD value will be used if not set.
-# IP (optional) - the IP address of the cloud controller holding endpoints to the public services.
-#	An easy way to set up endpoints.
-# KEYSTONE_IP, NOVA_IP, GLANCE_IP, EC2_IP, SWIFT_IP, VOLUME_IP (optional) - the endpoint IP address of the corresponding service. 
-# 	The IP value will be used if not set.
 
+. $(dirname $(readlink -f $0))/00-lib.sh
 
-if [ -z "$SERVICE_TOKEN"  -o -z "$SERVICE_ENDPOINT" ]; then
-  echo "Missing one of the mandatory arguments: SERVICE_TOKEN, SERVICE_ENDPOINT"
-  exit 1
-fi
+export SERVICE_TOKEN=$KEYSTONE_ADMIN_TOKEN
+export SERVICE_ENDPOINT=http://localhost:35357/v2.0
 
-export SERVICE_TOKEN=$SERVICE_TOKEN
-export SERVICE_ENDPOINT=$SERVICE_ENDPOINT
-
-ADMIN_PASSWORD=${ADMIN_PASSWORD:-nova}
-SERVICE_PASSWORD=${SERVICE_PASSWORD:-$ADMIN_PASSWORD}
-SERVICE_TENANT_NAME=${SERVICE_TENANT_NAME:-service}
+SERVICE_TENANT_NAME=service
 ENDPOINT_REGION=RegionOne
 
-KEYSTONE_IP=${KEYSTONE_IP:-$IP}
-NOVA_IP=${NOVA_IP:-$IP}
-EC2_IP=${EC2_IP:-$IP}
-GLANCE_IP=${GLANCE_IP:-$IP}
-SWIFT_IP=${SWIFT_IP:-$IP}
-VOLUME_IP=${VOLUME_IP:-$IP}
-
-if [ -z "$KEYSTONE_IP" -o -z "$NOVA_IP" -o -z "$EC2_IP" -o -z "$GLANCE_IP" -o -z "$SWIFT_IP" -o -z "$VOLUME_IP" ]; then
-  echo "Either define IP or each of KEYSTONE_IP, NOVA_IP, EC2_IP, GLANCE_IP, SWIFT_IP, VOLUME_IP"
-  exit 1
-fi
+KEYSTONE_IP=$KEYSTONE_HOST
+NOVA_IP=$NOVA_HOST
+EC2_IP=$EC2_HOST
+GLANCE_IP=$GLANCE_HOST
+SWIFT_IP=""
+VOLUME_IP=$VOLUME_HOST
 
 function get_id () {
     echo `$@ | awk '/ id / { print $4 }'`
@@ -148,6 +126,8 @@ keystone endpoint-create \
 
 echo "done"
 
+
+test -z "$SWIFT_IP" && exit 0
 
 # Swift initialization
 echo -n "Adding Swift service ... "

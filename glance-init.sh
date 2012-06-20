@@ -1,13 +1,12 @@
 #!/bin/bash
 
+. $(dirname $(readlink -f $0))/00-lib.sh
+
 IMAGE_URL=${IMAGE_URL:-"http://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-uec.tar.gz"}
-KEYSTONE_HOST=${KEYSTONE_HOST:-localhost}
-GLANCE_HOST=${GLANCE_HOST:-localhost}
 
 OS_USER=${OS_USER:-admin}
 OS_TENANT=${OS_TENANT:-admin}
-OS_PASSWORD=${OS_PASSWORD:-nova}
-
+OS_PASSWORD=$ADMIN_PASSWORD
 
 TEMP=$(mktemp -d)
 IMG_DIR=$TEMP/image

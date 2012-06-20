@@ -30,7 +30,7 @@ fi
 # Install and start mysql-server
 apt-get -y install $MYSQL_PKG
 # Update the DB to give user ‘$MYSQL_USER’@’%’ full control of the all databases:
-sudo mysql -uroot -p$MYSQL_PASSWORD -h127.0.0.1 -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'%' identified by '$MYSQL_PASSWORD';"
+sudo mysql -uroot -p$MYSQL_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' identified by '$MYSQL_PASSWORD';"
 
 # Update ``my.cnf`` for some local needs and restart the mysql service
 MY_CONF=/etc/mysql/my.cnf
@@ -55,9 +55,9 @@ for ROLE in nova keystone glance
 do
 DB=$ROLE
 MYSQL_USER=$ROLE
-mysql -uroot -p$MYSQL_PASSWORD -h$MYSQL_HOST <<MYSQL_DB
-create database $DB;
-grant all privileges on $DB.* to $MYSQL_USER@'%' identified by '$MYSQL_PASSWORD';
-grant all privileges on $DB.* to $MYSQL_USER@'%'localhost identified by '$MYSQL_PASSWORD';
+mysql -uroot -p$MYSQL_PASSWORD <<MYSQL_DB
+create database if not exists $DB;
+grant all privileges on $DB.* to '$MYSQL_USER'@'%' identified by '$MYSQL_PASSWORD';
+grant all privileges on $DB.* to '$MYSQL_USER'@'localhost' identified by '$MYSQL_PASSWORD';
 MYSQL_DB
 done

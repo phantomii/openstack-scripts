@@ -1,4 +1,5 @@
-CONFIG=$(dirname $(readlink -f $0))/stackrc
+BASE_DIR=$(dirname $(readlink -f $0))
+CONFIG=$BASE_DIR/stackrc
 LOCAL_CONFIG=localrc
 
 function check_root()

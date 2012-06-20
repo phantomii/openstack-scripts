@@ -22,7 +22,7 @@ cat <<EOF >$HOME/.my.cnf
 [client]
 user=root
 password=$MYSQL_PASSWORD
-host=$MYSQL_HOST
+host=localhost
 EOF
 chmod 0600 $HOME/.my.cnf
 fi
@@ -46,6 +46,8 @@ else
         # Add it
         sudo sed -i -e "/^\[mysqld\]/ a default-storage-engine = InnoDB" $MY_CONF
 fi
+
+echo "Restarting MySQL"
 
 service mysql restart
 

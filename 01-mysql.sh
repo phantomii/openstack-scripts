@@ -49,6 +49,8 @@ fi
 
 service mysql restart
 
+echo "Creating users and databases"
+
 for ROLE in nova keystone glance
 do
 DB=$ROLE
@@ -56,6 +58,6 @@ MYSQL_USER=$ROLE
 mysql -uroot -p$MYSQL_PASSWORD -h$MYSQL_HOST <<MYSQL_DB
 create database $DB;
 grant all privileges on $DB.* to $MYSQL_USER@'%' identified by '$MYSQL_PASSWORD';
-grant all privileges on $DB.* to $MYSQL_USER'%'localhost identified by '$MYSQL_PASSWORD';
+grant all privileges on $DB.* to $MYSQL_USER@'%'localhost identified by '$MYSQL_PASSWORD';
 MYSQL_DB
 done

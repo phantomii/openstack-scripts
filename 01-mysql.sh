@@ -14,19 +14,6 @@ $MYSQL_PKG mysql-server/root_password_again password $MYSQL_PASSWORD
 $MYSQL_PKG mysql-server/start_on_boot boolean true
 MYSQL_PRESEED
 
-# while ``.my.cnf`` is not needed for openstack to function, it is useful
-# as it allows you to access the mysql databases via ``mysql nova`` instead
- # of having to specify the username/password each time.
-if [[ ! -e $HOME/.my.cnf ]]; then
-cat <<EOF >$HOME/.my.cnf
-[client]
-user=root
-password=$MYSQL_PASSWORD
-host=localhost
-EOF
-chmod 0600 $HOME/.my.cnf
-fi
-
 # Install and start mysql-server
 apt-get -y install $MYSQL_PKG
 # Update the DB to give user ‘$MYSQL_USER’@’%’ full control of the all databases:

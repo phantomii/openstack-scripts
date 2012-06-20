@@ -28,7 +28,7 @@ chmod 0600 $HOME/.my.cnf
 fi
 
 # Install and start mysql-server
-apt-get install $MYSQL_PKG
+apt-get -y install $MYSQL_PKG
 # Update the DB to give user ‘$MYSQL_USER’@’%’ full control of the all databases:
 sudo mysql -uroot -p$MYSQL_PASSWORD -h127.0.0.1 -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'%' identified by '$MYSQL_PASSWORD';"
 
@@ -47,7 +47,7 @@ else
         sudo sed -i -e "/^\[mysqld\]/ a default-storage-engine = InnoDB" $MY_CONF
 fi
 
-service mysql-server restart
+service mysql restart
 
 for ROLE in nova keystone glance
 do

@@ -127,7 +127,7 @@ keystone endpoint-create \
 echo "done"
 
 
-test -z "$SWIFT_IP" && exit 0
+if [ -n "$SWIFT_IP" ]; then
 
 # Swift initialization
 echo -n "Adding Swift service ... "
@@ -159,3 +159,8 @@ keystone endpoint-create \
  --internalurl "http://$SWIFT_IP:8080/v1/AUTH_\$(tenant_id)s" >/dev/null
 
 echo "done"
+
+fi
+
+keystone endpoint-list
+

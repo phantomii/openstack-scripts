@@ -10,5 +10,3 @@ cat >>$NOVA_CONF <<NOVA_CONF
 --iscsi_ip_address=$MY_IP
 --volume_group=$VOLUME_GROUP_NAME
 NOVA_CONF
-
-service nova-volume restart

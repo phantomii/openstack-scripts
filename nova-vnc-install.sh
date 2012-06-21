@@ -6,3 +6,5 @@ check_root
 
 apt-get install -y  novnc nova-vncproxy
 
+service nova-vncproxy restart
+service novnc restart

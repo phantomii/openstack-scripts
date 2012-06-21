@@ -35,3 +35,7 @@ admin_tenant_name = $SERVICE_TENANT_NAME
 admin_user = nova
 admin_password = $SERVICE_PASSWORD
 NOVA_API_PASTE
+
+for i in nova-api nova-cert nova-consoleauth nova-scheduler; do
+	service $i restart
+done

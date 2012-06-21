@@ -2,8 +2,6 @@ BASE_DIR=$(dirname $(readlink -f $0))
 CONFIG=$BASE_DIR/stackrc
 LOCAL_CONFIG=localrc
 
-NOVA_CONF=/etc/nova/nova.conf
-
 function check_root()
 {
 	if test "$(whoami)" != "root" ; then

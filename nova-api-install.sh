@@ -5,6 +5,7 @@
 check_root
 
 NOVA_CONFIG=/etc/nova/nova.conf
+NOVA_API_PASTE=/etc/nova/api-paste.ini
 
 apt-get install -y nova-api nova-cert nova-consoleauth nova-scheduler nova-network
 
@@ -17,3 +18,6 @@ nova-manage floating create --ip_range=$FLOATING_RANGE --interface=$PUBLIC_IFACE
 echo "--connection_type=libvirt" >> $NOVA_CONFIG
 echo "--public_interface=$PUBLIC_INTERFACE" >> $NOVA_CONFIG
 echo "--multi_host" >> $NOVA_CONFIG
+
+echo "service_host = $KEYSTONE_HOST" >> $NOVA_API_PASTE 
+echo "service_port = 5000" >> $NOVA_API_PASTE 

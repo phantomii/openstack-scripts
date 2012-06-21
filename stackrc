@@ -41,3 +41,4 @@ VNC_PUB_HOST=$CC_PUB_HOST
 
 NOVA_CONF=/etc/nova/nova.conf
 VOLUME_GROUP_NAME=nova-volumes
+LVM_DEVICE_NAME=/dev/sdb

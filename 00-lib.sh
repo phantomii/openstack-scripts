@@ -58,9 +58,6 @@ function nova-common_install()
 --glance_api_servers=$GLANCE_HOST:9292
 --glance_host=$GLANCE_HOST
 NOVA_CONFIG
-	nova-manage db sync
-	nova-manage network create private --fixed_range_v4=$FIXED_RANGE --num_networks=1 --bridge=br$FIRST_VLAN --bridge_interface=$VLAN_IFACE
-	nova-manage floating create --ip_range=$FLOATING_RANGE --interface=$PUBLIC_IFACE
 }
 
 function get_iface_ip()

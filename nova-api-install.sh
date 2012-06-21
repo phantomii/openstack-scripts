@@ -15,9 +15,23 @@ nova-manage db sync
 nova-manage network create private --fixed_range_v4=$FIXED_RANGE --num_networks=1 --bridge=br$FIRST_VLAN --bridge_interface=$VLAN_IFACE
 nova-manage floating create --ip_range=$FLOATING_RANGE --interface=$PUBLIC_IFACE
 
-echo "--connection_type=libvirt" >> $NOVA_CONFIG
-echo "--public_interface=$PUBLIC_INTERFACE" >> $NOVA_CONFIG
-echo "--multi_host" >> $NOVA_CONFIG
+cat >>$NOVA_CONFIG <<NOVA_CONFIG
+--connection_type=libvirt
+--public_interface=$PUBLIC_IFACE
+--multi_host
+NOVA_CONFIG
 
-echo "service_host = $KEYSTONE_HOST" >> $NOVA_API_PASTE 
-echo "service_port = 5000" >> $NOVA_API_PASTE 
+cat >>$NOVA_API_PASTE <<NOVA_API_PASTE
+[filter:authtoken]
+service_host = $KEYSTONE_HOST
+service_port = 5000
+
+auth_host = $KEYSTONE_HOST
+auth_port = 35357
+auth_protocol = http
+auth_uri = http://$KEYSTONE_HOST:5000/
+
+admin_tenant_name = $SERVICE_TENANT_NAME
+admin_user = nova
+admin_password = $SERVICE_PASSWORD
+NOVA_API_PASTE

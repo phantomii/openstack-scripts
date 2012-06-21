@@ -32,3 +32,9 @@ function backup_file()
 {
 	cp $1 $1.orig
 }
+
+
+function get_iface_ip()
+{
+	ifconfig $1 | grep 'inet addr' | cut -d":" -f2 | cut -d" " -f1
+}

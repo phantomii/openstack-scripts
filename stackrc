@@ -1,6 +1,6 @@
 # TODO(aandreev): add some configuration variables here
 
-CC_HOST=192.168.56.101
+CC_HOST=192.168.56.103
 CC_PUB_HOST=172.18.8.60
 
 MYSQL_HOST=$CC_HOST

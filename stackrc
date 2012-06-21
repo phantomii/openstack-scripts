@@ -39,3 +39,4 @@ MANAGEMENT_IFACE=eth1
 
 
 NOVA_CONF=/etc/nova/nova.conf
+VOLUME_GROUP_NAME=nova-volumes

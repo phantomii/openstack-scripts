@@ -38,3 +38,9 @@ function get_iface_ip()
 {
 	ifconfig $1 | grep 'inet addr' | cut -d":" -f2 | cut -d" " -f1
 }
+
+
+function get_my_ip()
+{
+	get_iface_ip $MANAGEMENT_IFACE
+}

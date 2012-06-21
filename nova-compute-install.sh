@@ -17,8 +17,8 @@ cat >>$NOVA_CONF <<NOVA_CONF
 --vnc_enabled
 --novncproxy_base_url=http://$VNC_PUB_HOST:6080/vnc_auto.html
 --xvpvncproxy_base_url=http://$VNC_PUB_HOST:6081/console
---vncserver_listen=0.0.0.0
---vncserver_proxyclient_address=0.0.0.0
+--vncserver_listen=$MY_IP
+--vncserver_proxyclient_address=$MY_IP
 
 # nova-network configuration
 --multi_host

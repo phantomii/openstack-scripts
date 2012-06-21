@@ -62,3 +62,14 @@ NOVA_CONFIG
 	nova-manage network create private --fixed_range_v4=$FIXED_RANGE --num_networks=1 --bridge=br$FIRST_VLAN --bridge_interface=$VLAN_IFACE
 	nova-manage floating create --ip_range=$FLOATING_RANGE --interface=$PUBLIC_IFACE
 }
+
+function get_iface_ip()
+{
+	ifconfig $1 | grep 'inet addr' | cut -d":" -f2 | cut -d" " -f1
+}
+
+
+function get_my_ip()
+{
+	get_iface_ip $MANAGEMENT_IFACE
+}

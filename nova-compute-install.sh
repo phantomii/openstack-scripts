@@ -6,7 +6,14 @@ check_root
 
 apt-get install -y nova-compute nova-network nova-api-metadata
 
+cat >/etc/nova/nova-compute.conf <<EOF
+
+# nova-compute configuration, appended by installation script
+--libvirt_type=qemu
+EOF
+
 cat >>$NOVA_CONF <<NOVA_CONF
+
 # nova-compute configuration, appended by installation script
 --vnc_enabled
 --novncproxy_base_url=http://$VNC_PUB_HOST:6080/vnc_auto.html

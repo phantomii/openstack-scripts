@@ -15,12 +15,17 @@ nova-manage db sync
 nova-manage network create private --fixed_range_v4=$FIXED_RANGE --num_networks=1 --bridge=br$FIRST_VLAN --bridge_interface=$VLAN_IFACE
 nova-manage floating create --ip_range=$FLOATING_RANGE --interface=$PUBLIC_IFACE
 
+# NOTE(aandreev): not backing up nova.conf file, already done in nova-common-install.sh
+
 cat >>$NOVA_CONFIG <<NOVA_CONFIG
 # NOTE: the configuration below was appended by installation script
 --connection_type=libvirt
 --public_interface=$PUBLIC_IFACE
 --multi_host
 NOVA_CONFIG
+
+
+backup_file $NOVA_API_PASTE
 
 cat >>$NOVA_API_PASTE <<NOVA_API_PASTE
 # NOTE: the configuration below was appended by installation script

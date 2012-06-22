@@ -6,7 +6,11 @@ check_root
 
 apt-get install -y nova-compute nova-network nova-api-metadata
 
-cat >/etc/nova/nova-compute.conf <<EOF
+NOVA_COMPUTE_CONF=/etc/nova/nova-compute.conf
+
+backup_file $NOVA_COMPUTE_CONF
+
+cat >>$NOVA_COMPUTE_CONF <<EOF
 
 # nova-compute configuration, appended by installation script
 --libvirt_type=qemu

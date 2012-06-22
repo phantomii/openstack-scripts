@@ -11,6 +11,7 @@ KEYSTONE_CONFIG=/etc/keystone/keystone.conf
 backup_file $KEYSTONE_CONFIG
 
 cat >>$KEYSTONE_CONFIG <<KEYSTONE_CONFIG
+# NOTE: the configuration below was added by installation script
 [sql]
 connection=mysql://keystone:$MYSQL_PASSWORD@$MYSQL_HOST/keystone
 [DEFAULT]

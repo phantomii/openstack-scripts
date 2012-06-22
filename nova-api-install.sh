@@ -16,12 +16,14 @@ nova-manage network create private --fixed_range_v4=$FIXED_RANGE --num_networks=
 nova-manage floating create --ip_range=$FLOATING_RANGE --interface=$PUBLIC_IFACE
 
 cat >>$NOVA_CONFIG <<NOVA_CONFIG
+# NOTE: the configuration below was appended by installation script
 --connection_type=libvirt
 --public_interface=$PUBLIC_IFACE
 --multi_host
 NOVA_CONFIG
 
 cat >>$NOVA_API_PASTE <<NOVA_API_PASTE
+# NOTE: the configuration below was appended by installation script
 [filter:authtoken]
 service_host = $KEYSTONE_HOST
 service_port = 5000

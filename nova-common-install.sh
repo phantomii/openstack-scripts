@@ -11,7 +11,8 @@ NOVA_CONFIG=/etc/nova/nova.conf
 backup_file $NOVA_CONFIG
 
 cat >>$NOVA_CONFIG <<NOVA_CONFIG
-# NOTE: the configuration below was appended by installation script
+
+# nova-common configuration,  appended by installation script
 --dhcpbridge_flagfile=/etc/nova/nova.conf
 --dhcpbridge=/usr/bin/nova-dhcpbridge
 --logdir=/var/log/nova

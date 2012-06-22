@@ -4,23 +4,17 @@
 
 check_root
 
-apt-get install -y nova-volume
-
-cat >/etc/nova/nova-compute.conf <<EOF
---libvirt_type=qemu
-EOF
-
-apt-get install nova-compute nova-network nova-api-metadata
+apt-get install -y nova-compute nova-network nova-api-metadata
 
 cat >>$NOVA_CONF <<NOVA_CONF
-# nova-compute configuration
+# nova-compute configuration, appended by installation script
 --vnc_enabled
 --novncproxy_base_url=http://$VNC_PUB_HOST:6080/vnc_auto.html
 --xvpvncproxy_base_url=http://$VNC_PUB_HOST:6081/console
 --vncserver_listen=$MY_IP
 --vncserver_proxyclient_address=$MY_IP
 
-# nova-network configuration
+# nova-network configuration, appended by installation script
 --multi_host
 --public_interface=$PUBLIC_IFACE
 --network_manager=nova.network.manager.VlanManager

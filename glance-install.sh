@@ -11,7 +11,10 @@ GLANCE_API_CONF=/etc/glance/glance-api.conf
 GLANCE_REG_INI=/etc/glance/glance-registry-paste.ini
 GLANCE_REG_CONF=/etc/glance/glance-registry.conf
 
+backup_file $GLANCE_API_INI
+
 cat >>$GLANCE_API_INI <<GLANCE_INI
+# NOTE: the configuration below was appended by installation script
 [filter:authtoken]
 service_host = $KEYSTONE_HOST
 service_port = 5000
@@ -26,12 +29,20 @@ admin_user = glance
 admin_password = $SERVICE_PASSWORD
 GLANCE_INI
 
+
+backup_file $GLANCE_API_CONF
+
 cat >>$GLANCE_API_CONF <<GLANCE_CONF
+# NOTE: the configuration below was appended by installation script
 [paste_deploy]
 flavor = keystone
 GLANCE_CONF
 
+
+backup_file $GLANCE_REG_INI
+
 cat >>$GLANCE_REG_INI <<GLANCE_INI
+# NOTE: the configuration below was appended by installation script
 [filter:authtoken]
 service_host = $KEYSTONE_HOST
 service_port = 5000
@@ -46,7 +57,11 @@ admin_user = glance
 admin_password = $SERVICE_PASSWORD
 GLANCE_INI
 
+
+backup_file $GLANCE_REG_CONF
+
 cat >>$GLANCE_REG_CONF <<GLANCE_CONF
+# NOTE: the configuration below was appended by installation script
 [DEFAULT]
 sql_connection = mysql://glance:$MYSQL_PASSWORD@$MYSQL_HOST/glance
 [paste_deploy]

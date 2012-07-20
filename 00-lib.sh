@@ -43,3 +43,5 @@ function get_my_ip()
 {
 	get_iface_ip $MANAGEMENT_IFACE
 }
+
+MY_IP=$(get_my_ip)

@@ -5,15 +5,9 @@
 export SERVICE_TOKEN=$KEYSTONE_ADMIN_TOKEN
 export SERVICE_ENDPOINT=http://localhost:35357/v2.0
 
-SERVICE_TENANT_NAME=service
 ENDPOINT_REGION=RegionOne
 
-KEYSTONE_IP=$KEYSTONE_HOST
-NOVA_IP=$NOVA_HOST
-EC2_IP=$EC2_HOST
-GLANCE_IP=$GLANCE_HOST
-SWIFT_IP=""
-VOLUME_IP=$VOLUME_HOST
+SWIFT_HOST=${SWIFT_HOST:-""}
 
 function get_id () {
     echo `$@ | awk '/ id / { print $4 }'`
@@ -53,9 +47,9 @@ KEYSTONE_SERVICE=$(get_id keystone service-create --name=keystone \
 keystone endpoint-create \
  --region $ENDPOINT_REGION \
  --service_id=$KEYSTONE_SERVICE \
- --publicurl=http://$KEYSTONE_IP:5000/v2.0 \
- --internalurl=http://$KEYSTONE_IP:5000/v2.0 \
- --adminurl=http://$KEYSTONE_IP:35357/v2.0 >/dev/null
+ --publicurl=http://$KEYSTONE_PUB_HOST:5000/v2.0 \
+ --internalurl=http://$KEYSTONE_HOST:5000/v2.0 \
+ --adminurl=http://$KEYSTONE_HOST:35357/v2.0 >/dev/null
 
 echo "done"
 
@@ -76,9 +70,9 @@ NOVA_SERVICE=$(get_id keystone service-create --name=nova \
 keystone endpoint-create \
  --region $ENDPOINT_REGION \
  --service_id=$NOVA_SERVICE \
- --publicurl="http://$NOVA_IP:8774/v2/%(tenant_id)s" \
- --internalurl="http://$NOVA_IP:8774/v2/%(tenant_id)s" \
- --adminurl="http://$NOVA_IP:8774/v2/%(tenant_id)s" >/dev/null
+ --publicurl="http://$NOVA_PUB_HOST:8774/v2/%(tenant_id)s" \
+ --internalurl="http://$NOVA_HOST:8774/v2/%(tenant_id)s" \
+ --adminurl="http://$NOVA_HOST:8774/v2/%(tenant_id)s" >/dev/null
 
 echo "done"
 
@@ -87,9 +81,9 @@ EC2_SERVICE=$(get_id keystone service-create --name=ec2 --type=ec2)
 keystone endpoint-create \
  --region $ENDPOINT_REGION \
  --service_id=$EC2_SERVICE \
- --publicurl=http://$EC2_IP:8773/services/Cloud \
- --internalurl=http://$EC2_IP:8773/services/Cloud \
- --adminurl=http://$EC2_IP:8773/services/Admin >/dev/null
+ --publicurl=http://$EC2_PUB_HOST:8773/services/Cloud \
+ --internalurl=http://$EC2_HOST:8773/services/Cloud \
+ --adminurl=http://$EC2_HOST:8773/services/Admin >/dev/null
 
 echo "done"
 
@@ -100,9 +94,9 @@ VOLUME_SERVICE=$(get_id keystone service-create --name=volume --type=volume)
 keystone endpoint-create \
  --region RegionOne \
  --service_id=$VOLUME_SERVICE \
- --publicurl="http://$VOLUME_IP:8776/v1/%(tenant_id)s" \
- --internalurl="http://$VOLUME_IP:8776/v1/%(tenant_id)s" \
- --adminurl="http://$VOLUME_IP:8776/v1/%(tenant_id)s" >/dev/null
+ --publicurl="http://$VOLUME_PUB_HOST:8776/v1/%(tenant_id)s" \
+ --internalurl="http://$VOLUME_HOST:8776/v1/%(tenant_id)s" \
+ --adminurl="http://$VOLUME_HOST:8776/v1/%(tenant_id)s" >/dev/null
 
 echo "done"
 
@@ -120,14 +114,14 @@ GLANCE_SERVICE=$(get_id keystone service-create --name=glance --type=image)
 keystone endpoint-create \
  --region $ENDPOINT_REGION \
  --service_id=$GLANCE_SERVICE \
- --publicurl=http://$GLANCE_IP:9292/v1 \
- --internalurl=http://$GLANCE_IP:9292/v1 \
- --adminurl=http://$GLANCE_IP:9292/v1 >/dev/null
+ --publicurl=http://$GLANCE_PUB_HOST:9292/v1 \
+ --internalurl=http://$GLANCE_HOST:9292/v1 \
+ --adminurl=http://$GLANCE_HOST:9292/v1 >/dev/null
 
 echo "done"
 
 
-if [ -n "$SWIFT_IP" ]; then
+if [ -n "$SWIFT_HOST" ]; then
 
 # Swift initialization
 echo -n "Adding Swift service ... "
@@ -154,9 +148,9 @@ SWIFT_SERVICE=$(get_id keystone service-create --name=swift --type=object-store)
 keystone endpoint-create \
  --region $ENDPOINT_REGION \
  --service_id=$SWIFT_SERVICE \
- --publicurl "http://$SWIFT_IP:8080/v1/AUTH_\$(tenant_id)s" \
- --adminurl "http://$SWIFT_IP:8080/" \
- --internalurl "http://$SWIFT_IP:8080/v1/AUTH_\$(tenant_id)s" >/dev/null
+ --publicurl "http://$SWIFT_PUB_HOST:8080/v1/AUTH_\$(tenant_id)s" \
+ --adminurl "http://$SWIFT_HOST:8080/" \
+ --internalurl "http://$SWIFT_HOST:8080/v1/AUTH_\$(tenant_id)s" >/dev/null
 
 echo "done"
 

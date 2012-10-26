@@ -12,30 +12,31 @@ apt-get install -y nova-api nova-cert nova-consoleauth nova-scheduler nova-netwo
 service nova-network stop
 
 nova-manage db sync
-nova-manage network create private --fixed_range_v4=$FIXED_RANGE --num_networks=1 --bridge=br$FIRST_VLAN --bridge_interface=$VLAN_IFACE
-nova-manage floating create --ip_range=$FLOATING_RANGE --interface=$PUBLIC_IFACE
+nova-manage network create private --fixed_range_v4=$FIXED_IP_RANGE --num_networks=1 --bridge_interface=$DATA_IFACE_NAME --vlan=$FIRST_VLAN_ID --network_size=$NETWORK_SIZE
+
+nova-manage floating create --ip_range=$FLOATING_IP_RANGE --interface=$PUB_IFACE_NAME
 
 # NOTE(aandreev): not backing up nova.conf file, already done in nova-common-install.sh
 
 cat >>$NOVA_CONFIG <<NOVA_CONFIG
 # NOTE: the configuration below was appended by installation script
---connection_type=libvirt
---public_interface=$PUBLIC_IFACE
---multi_host
+connection_type=libvirt
+public_interface=$PUBLIC_IFACE
+multi_host=True
 NOVA_CONFIG
 
 
 backup_file $NOVA_API_PASTE
 
+sed "/^admin_/s/^/# /g" $NOVA_API_PASTE
+sed "/^auth_host/s/^/# /g" $NOVA_API_PASTE
+
 cat >>$NOVA_API_PASTE <<NOVA_API_PASTE
 # NOTE: the configuration below was appended by installation script
-[filter:authtoken]
 service_host = $KEYSTONE_HOST
 service_port = 5000
 
 auth_host = $KEYSTONE_HOST
-auth_port = 35357
-auth_protocol = http
 auth_uri = http://$KEYSTONE_HOST:5000/
 
 admin_tenant_name = $SERVICE_TENANT_NAME

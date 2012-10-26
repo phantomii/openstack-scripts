@@ -4,27 +4,14 @@
 
 check_root
 
-apt-get install -y keystone python-keystoneclient
+apt-get install -y keystone python-keystone python-keystoneclient
 
 KEYSTONE_CONFIG=/etc/keystone/keystone.conf
 
 backup_file $KEYSTONE_CONFIG
 
-cat >>$KEYSTONE_CONFIG <<KEYSTONE_CONFIG
-# NOTE: the configuration below was added by installation script
-[sql]
-connection=mysql://keystone:$MYSQL_PASSWORD@$MYSQL_HOST/keystone
-[DEFAULT]
-admin_token=$KEYSTONE_ADMIN_TOKEN
-[identity]
-driver=keystone.identity.backends.sql.Identity
-[catalog]
-driver=keystone.catalog.backends.sql.Catalog
-[token]
-driver=keystone.token.backends.sql.Token
-[ec2]
-driver=keystone.contrib.ec2.backends.sql.Ec2
-KEYSTONE_CONFIG
+sed -i "s/# admin_token = ADMIN/admin_token = $ADMIN_TOKEN/g" $KEYSTONE_CONFIG
+sed -i "s%connection = sqlite:////var/lib/keystone/keystone.db%connection = mysql://keystone:$KEYSTONE_DB_PASSWORD@$MYSQL_HOST/keystone%g" $KEYSTONE_CONFIG
 
 keystone-manage db_sync
 

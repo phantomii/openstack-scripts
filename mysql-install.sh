@@ -6,16 +6,13 @@ check_root
 
 MYSQL_PKG=mysql-server-5.5
 
-# Seed configuration with mysql password so that apt-get install doesn't
-# prompt us for a password upon install.
-cat <<MYSQL_PRESEED | sudo debconf-set-selections
-$MYSQL_PKG mysql-server/root_password password $MYSQL_PASSWORD
-$MYSQL_PKG mysql-server/root_password_again password $MYSQL_PASSWORD
-$MYSQL_PKG mysql-server/start_on_boot boolean true
-MYSQL_PRESEED
+# Disable interactive mode on installation
+export DEBIAN_FRONTEND=noninteractive
 
 # Install and start mysql-server
 apt-get -y install $MYSQL_PKG
+# Set password for root
+sudo mysqladmin -u root password $MYSQL_PASSWORD
 # Update the DB to give user ‘$MYSQL_USER’@’%’ full control of the all databases:
 sudo mysql -uroot -p$MYSQL_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' identified by '$MYSQL_PASSWORD';"
 
@@ -40,7 +37,7 @@ service mysql restart
 
 echo "Creating users and databases"
 
-for ROLE in nova keystone glance
+for ROLE in nova keystone glance cinder
 do
 DB=$ROLE
 MYSQL_USER=$ROLE

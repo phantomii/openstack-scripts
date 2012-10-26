@@ -4,7 +4,7 @@
 
 check_root
 
-pvcreate $LVM_BLOCK_DEVICE
-vgcreate $VOLUME_GROUP_NAME $LVM_BLOCK_DEVICE
+pvcreate $NOVA_LVM_BLOCK_DEVICE
+vgcreate $NOVA_VOL_GROUP_NAME $NOVA_LVM_BLOCK_DEVICE
 
 service nova-volume restart

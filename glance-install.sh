@@ -34,7 +34,6 @@ backup_file $GLANCE_API_CONF
 
 cat >>$GLANCE_API_CONF <<GLANCE_CONF
 # NOTE: the configuration below was appended by installation script
-[paste_deploy]
 flavor = keystone
 GLANCE_CONF
 
@@ -60,15 +59,18 @@ GLANCE_INI
 
 backup_file $GLANCE_REG_CONF
 
+GLANCE_DB_CONFIG_STR="# NOTE: the configuration below was appended by installation script\n\
+sql_connection = mysql://glance:$MYSQL_PASSWORD@$MYSQL_HOST/glance\n\
+# sql_connection"
+
+sed -i "s%^sql_connection%$GLANCE_DB_CONFIG_STR%g" $GLANCE_REG_CONF
+
 cat >>$GLANCE_REG_CONF <<GLANCE_CONF
 # NOTE: the configuration below was appended by installation script
-[DEFAULT]
-sql_connection = mysql://glance:$MYSQL_PASSWORD@$MYSQL_HOST/glance
-[paste_deploy]
 flavor = keystone
 GLANCE_CONF
 
-glance-manage version_control 0
+#glance-manage version_control 0
 glance-manage db_sync
 
 service glance-api restart

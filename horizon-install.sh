@@ -5,9 +5,7 @@
 check_root
 
 apt-get install -y openstack-dashboard
-cat >>/etc/openstack-dashboard/local_settings.py <<CONF
-# NOTE: the configuration below was appended by installation script
-OPENSTACK_HOST = "$KEYSTONE_HOST"
-CONF
+
+sed -i "/^OPENSTACK_HOST/s/= \"127.0.0.1\"/ = \"$KEYSTONE_PUB_HOST\"/g" /etc/openstack-dashboard/local_settings.py
 
 service apache2 restart

@@ -22,15 +22,6 @@ MY_CONF=/etc/mysql/my.cnf
 # Change ‘bind-address’ from localhost (127.0.0.1) to any (0.0.0.0)
 sudo sed -i "/^bind-address/s/127.0.0.1/$MYSQL_HOST/g" $MY_CONF
 
-# Set default db type to InnoDB
-if grep -q "default-storage-engine" $MY_CONF; then
-	# Change it
-        sudo bash -c "source $TOP_DIR/functions; iniset $MY_CONF mysqld default-storage-engine InnoDB"
-else
-        # Add it
-        sudo sed -i -e "/^\[mysqld\]/ a default-storage-engine = InnoDB" $MY_CONF
-fi
-
 echo "Restarting MySQL"
 
 service mysql restart

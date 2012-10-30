@@ -1,2 +1,2 @@
-Use an appropriate branch for particular OpenStack release.
+Beware that you MUST modify the stackrc file before executing the script.
 

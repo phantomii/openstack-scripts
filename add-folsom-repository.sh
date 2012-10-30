@@ -5,3 +5,5 @@
 check_root
 
 echo deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/folsom main >> /etc/apt/sources.list.d/folsom.list &&	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 5EDB1B62EC4926EA
+
+apt-get update

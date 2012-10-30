@@ -13,6 +13,17 @@ function get_id () {
     echo `$@ | awk '/ id / { print $4 }'`
 }
 
+read -n1 -p "Cinder or Nova Volume? [C/n]: " SERVICE_CHANGE
+echo
+SERVICE_CHANGE=${SERVICE_CHANGE:-С}
+
+case $SERVICE_CHANGE in
+	c|C) VOLUME_SERVICE_NAME="cinder";;
+	n|N) VOLUME_SERVICE_NAME="nova-volume";;
+	*) echo "Sorry... :("
+	   exit 1;;
+esac
+
 echo -n "Adding tenants ... "
 ADMIN_TENANT=$(get_id keystone tenant-create --name=admin)
 SERVICE_TENANT=$(get_id keystone tenant-create --name=$SERVICE_TENANT_NAME)
@@ -102,33 +113,41 @@ echo "done"
 
 
 echo -n "Adding Volume service ... "
-CINDER_USER=$(get_id keystone user-create \
-	--name=cinder \
-	--pass=$SERVICE_PASSWORD \
-	--tenant_id=$SERVICE_TENANT \
-	--email=cinder@example.com)
-keystone user-role-add \
-	--tenant_id=$SERVICE_TENANT \
-	--user_id=$CINDER_USER \
-	--role_id=$ADMIN_ROLE
-CINDER_SERVICE=$(get_id keystone service-create \
-	--name=cinder \
-	--type=volume \
-	--description='OpenStack_Volume_Service')
-keystone endpoint-create \
-	--region=$ENDPOINT_REGION \
-	--service-id=$CINDER_SERVICE \
-	--publicurl=http://$CINDER_PUB_HOST:8776/v1/$(tenant_id)s \
-	--adminurl=http://$CINDER_ADMIN_HOST:8776/v1/$(tenant_id)s \
-	--internalurl=http://$CINDER_HOST:8776/v1/$(tenant_id)s > /dev/null
-
-VOLUME_SERVICE=$(get_id keystone service-create --name=volume --type=volume)
-keystone endpoint-create \
-	--region=$ENDPOINT_REGION \
-	--service_id=$VOLUME_SERVICE \
-	--publicurl=http://$VOLUME_PUB_HOST:8776/v1/%(tenant_id)s \
-	--internalurl=http://$VOLUME_HOST:8776/v1/%(tenant_id)s \
-	--adminurl=http://$VOLUME_HOST:8776/v1/%(tenant_id)s >/dev/null
+case $VOLUME_SERVICE_NAME in
+	"cinder")
+	echo "Cinder"
+	CINDER_USER=$(get_id keystone user-create \
+		--name=cinder \
+		--pass=$SERVICE_PASSWORD \
+		--tenant_id=$SERVICE_TENANT \
+		--email=cinder@example.com)
+	keystone user-role-add \
+		--tenant_id=$SERVICE_TENANT \
+		--user_id=$CINDER_USER \
+		--role_id=$ADMIN_ROLE
+	CINDER_SERVICE=$(get_id keystone service-create \
+		--name=cinder \
+		--type=volume \
+		--description='OpenStack_Volume_Service')
+	keystone endpoint-create \
+		--region=$ENDPOINT_REGION \
+		--service-id=$CINDER_SERVICE \
+		--publicurl="http://$CINDER_PUB_HOST:8776/v1/$(tenant_id)s" \
+		--adminurl="http://$CINDER_ADMIN_HOST:8776/v1/$(tenant_id)s" \
+		--internalurl="http://$CINDER_HOST:8776/v1/$(tenant_id)s" > /dev/null
+	;;
+	
+	"nova-volume")
+	echo "nova-volume"
+	VOLUME_SERVICE=$(get_id keystone service-create --name=volume --type=volume)
+	keystone endpoint-create \
+		--region=$ENDPOINT_REGION \
+		--service_id=$VOLUME_SERVICE \
+		--publicurl="http://$VOLUME_PUB_HOST:8776/v1/%(tenant_id)s" \
+		--internalurl="http://$VOLUME_HOST:8776/v1/%(tenant_id)s" \
+		--adminurl="http://$VOLUME_HOST:8776/v1/%(tenant_id)s" >/dev/null
+	;;
+esac
 echo "done"
 
 # Glance initialization
@@ -186,9 +205,9 @@ SWIFT_SERVICE=$(get_id keystone service-create \
 keystone endpoint-create \
 	--region=$ENDPOINT_REGION \
 	--service_id=$SWIFT_SERVICE \
-	--publicurl=http://$SWIFT_PUB_HOST:8080/v1/AUTH_\$(tenant_id)s \
-	--adminurl=http://$SWIFT_HOST:8080/ \
-	--internalurl=http://$SWIFT_HOST:8080/v1/AUTH_\$(tenant_id)s >/dev/null
+	--publicurl="http://$SWIFT_PUB_HOST:8080/v1/AUTH_\$(tenant_id)s" \
+	--adminurl="http://$SWIFT_HOST:8080/" \
+	--internalurl="http://$SWIFT_HOST:8080/v1/AUTH_\$(tenant_id)s" >/dev/null
 echo "done"
 
 fi

@@ -28,13 +28,17 @@ service mysql restart
 
 echo "Creating users and databases"
 
-for ROLE in nova keystone glance cinder
+for ROLE in nova keystone glance cinder quantum
 do
 DB=$ROLE
 MYSQL_USER=$ROLE
+
+DB_PASSWORD_VAR_NAME=$(echo "$ROLE"_DB_PASSWORD | tr '[:lower:]' '[:upper:]')
+eval PASSWORD=\$$DB_PASSWORD_VAR_NAME
+
 mysql -uroot -p$MYSQL_PASSWORD <<MYSQL_DB
 create database if not exists $DB;
-grant all privileges on $DB.* to '$MYSQL_USER'@'%' identified by '$MYSQL_PASSWORD';
-grant all privileges on $DB.* to '$MYSQL_USER'@'localhost' identified by '$MYSQL_PASSWORD';
+grant all privileges on $DB.* to '$MYSQL_USER'@'%' identified by '$PASSWORD';
+grant all privileges on $DB.* to '$MYSQL_USER'@'localhost' identified by '$PASSWORD';
 MYSQL_DB
 done

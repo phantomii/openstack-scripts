@@ -60,7 +60,7 @@ GLANCE_INI
 backup_file $GLANCE_REG_CONF
 
 GLANCE_DB_CONFIG_STR="# NOTE: the configuration below was appended by installation script\n\
-sql_connection = mysql://glance:$MYSQL_PASSWORD@$MYSQL_HOST/glance\n\
+sql_connection = mysql://glance:$GLANCE_DB_PASSWORD@$MYSQL_HOST/glance\n\
 # sql_connection"
 
 sed -i "s%^sql_connection%$GLANCE_DB_CONFIG_STR%g" $GLANCE_REG_CONF
